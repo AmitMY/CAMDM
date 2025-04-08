@@ -44,7 +44,14 @@ disable = [
 ]
 
 [tool.setuptools]
-packages = ["CAMDM"]
+packages = [
+    "CAMDM",
+    "CAMDM.diffusion",
+    "CAMDM.data",
+    "CAMDM.config", 
+    "CAMDM.network",
+    "CAMDM.utils"
+]
 
 [tool.pytest.ini_options]
 addopts = "-v"

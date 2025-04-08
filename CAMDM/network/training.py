@@ -1,8 +1,8 @@
 import numpy as np
 import blobfile as bf
-import utils.common as common
+import CAMDM.utils.common as common
 from tqdm import tqdm
-import utils.nn_transforms as nn_transforms
+import CAMDM.utils.nn_transforms as nn_transforms
 import itertools
 
 import torch
@@ -10,8 +10,9 @@ from torch.optim import AdamW
 from torch.utils.data import Subset, DataLoader
 from torch_ema import ExponentialMovingAverage
 
-from diffusion.resample import create_named_schedule_sampler
-from diffusion.gaussian_diffusion import *
+from CAMDM.diffusion.resample import create_named_schedule_sampler
+from CAMDM.diffusion.gaussian_diffusion import *
+from CAMDM.utils.nn_transforms import neural_FK
 
 
 class BaseTrainingPortal:
