@@ -22,6 +22,7 @@ dependencies = [
     "absl-py>=2.1.0",
     "coloredlogs>=15.0.1",
     "humanfriendly>=10.0",
+    "torch-tb-profiler"
 ]
 
 [project.optional-dependencies]

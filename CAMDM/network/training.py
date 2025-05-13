@@ -59,7 +59,15 @@ class BaseTrainingPortal:
         raise NotImplementedError('evaluate_sampling function must be implemented')
     
         
-    def run_loop(self):
+    def run_loop(self, enable_profiler=False, profiler_directory='./logs/tb_profiler'):
+        if enable_profiler:
+            profiler = torch.profiler.profile(
+                    activities=[torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA],
+                    on_trace_ready=torch.profiler.tensorboard_trace_handler(profiler_directory))
+            profiler.start()
+        else:
+            profiler = None
+
         sampling_num = 16
         sampling_idx = np.random.randint(0, len(self.dataloader.dataset), sampling_num)
         sampling_subset = DataLoader(Subset(self.dataloader.dataset, sampling_idx), batch_size=sampling_num)
@@ -86,7 +94,9 @@ class BaseTrainingPortal:
                 total_loss = (losses["loss"] * weights).mean()
                 total_loss.backward()
                 self.opt.step()
-            
+                if profiler:
+                    profiler.step()
+
                 if self.config.trainer.ema:
                     self.ema.update()
                 
@@ -145,6 +155,8 @@ class BaseTrainingPortal:
         self.load_checkpoint(best_path)
         self.evaluate_sampling(sampling_subset, save_folder_name='best')
 
+        if profiler:
+            profiler.stop()
 
     def state_dict(self):
         model_state = self.model.state_dict()
