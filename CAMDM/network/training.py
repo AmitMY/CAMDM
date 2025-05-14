@@ -105,7 +105,12 @@ class BaseTrainingPortal:
                         if key_name not in epoch_losses.keys():
                             epoch_losses[key_name] = []
                         epoch_losses[key_name].append(losses[key_name].mean().item())
-            
+
+            # Stop profiling after one epoch
+            if profiler:
+                profiler.stop()
+                profiler = None
+
             if self.prior_loader is not None:
                 for prior_datas in itertools.islice(self.prior_loader, data_len):
                     prior_datas = {key: val.to(self.device) if torch.is_tensor(val) else val for key, val in prior_datas.items()}
@@ -154,9 +159,6 @@ class BaseTrainingPortal:
         best_path = '%s/best.pt' % (self.config.save)
         self.load_checkpoint(best_path)
         self.evaluate_sampling(sampling_subset, save_folder_name='best')
-
-        if profiler:
-            profiler.stop()
 
     def state_dict(self):
         model_state = self.model.state_dict()
