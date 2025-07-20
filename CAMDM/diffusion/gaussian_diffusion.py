@@ -146,36 +146,18 @@ class GaussianDiffusion:
         rescale_timesteps=False,
         lambda_3d=1.,
         lambda_vel=1.,
-        lambda_r_vel=1.,
-        lambda_pose=1.,
-        lambda_orient=1.,
-        lambda_loc=1.,
-        data_rep='rot6d',
-        lambda_root_vel=0.,
-        lambda_vel_rcxyz=0.,
-        lambda_fc=0.,
+        lambda_r_vel=1.
     ):
         self.model_mean_type = model_mean_type
         self.model_var_type = model_var_type
         self.loss_type = loss_type
         self.rescale_timesteps = rescale_timesteps
-        self.data_rep = data_rep
-
-        if data_rep != 'rot_vel' and lambda_pose != 1.:
-            raise ValueError('lambda_pose is relevant only when training on velocities!')
-        self.lambda_pose = lambda_pose
-        self.lambda_orient = lambda_orient
-        self.lambda_loc = lambda_loc
 
         self.lambda_3d = lambda_3d
         self.lambda_vel = lambda_vel
         self.lambda_r_vel = lambda_r_vel
-        self.lambda_root_vel = lambda_root_vel
-        self.lambda_vel_rcxyz = lambda_vel_rcxyz
-        self.lambda_fc = lambda_fc
 
-        if self.lambda_3d > 0. or self.lambda_vel > 0. or self.lambda_root_vel > 0. or \
-                self.lambda_vel_rcxyz > 0. or self.lambda_fc > 0.:
+        if self.lambda_3d > 0. or self.lambda_vel > 0.:
             assert self.loss_type == LossType.MSE, 'Geometric losses are supported by MSE loss type only!'
 
         # Use float64 for accuracy.
