@@ -96,7 +96,7 @@ class LossType(enum.Enum):
         return self == LossType.KL or self == LossType.RESCALED_KL
 
 
-class GaussianDiffusion:
+class GaussianDiffusionBase:
     """
     Utilities for training and sampling diffusion models.
 
