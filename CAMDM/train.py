@@ -33,12 +33,17 @@ def train(config, resume, logger, tb_writer):
     
     input_feats = (train_data.joint_num+1) * train_data.per_rot_feat   # use the root translation as an extra joint
 
-    model = MotionDiffusion(input_feats, len(train_data.style_set),
-                train_data.joint_num+1, train_data.per_rot_feat, 
-                config.arch.rot_req, config.arch.clip_len,
-                config.arch.latent_dim, config.arch.ff_size, 
-                config.arch.num_layers, config.arch.num_heads, 
-                arch=config.arch.decoder, cond_mask_prob=config.trainer.cond_mask_prob, device=config.device).to(config.device)
+    model = MotionDiffusion(input_feats=input_feats,
+                            nstyles=len(train_data.style_set),
+                            njoints=train_data.joint_num+1,
+                            nfeats=train_data.per_rot_feat,
+                            latent_dim=config.arch.latent_dim,
+                            ff_size=config.arch.ff_size,
+                            num_layers=config.arch.num_layers,
+                            num_heads=config.arch.num_heads,
+                            arch=config.arch.decoder,
+                            cond_mask_prob=config.trainer.cond_mask_prob,
+                            device=config.device).to(config.device)
     
     # logger.info('\nModel structure: \n%s' % str(model))
     trainer = MotionTrainingPortal(config, model, diffusion, train_dataloader, logger, tb_writer)
